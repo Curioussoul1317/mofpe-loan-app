@@ -1,0 +1,82 @@
+services:
+
+  db:
+    image: mysql:8.4
+
+    environment:
+      MYSQL_DATABASE: loan_portfolio
+      MYSQL_USER: loan_user
+      MYSQL_PASSWORD: loan_password
+      MYSQL_ROOT_PASSWORD: root_password
+
+    volumes:
+      - db_data:/var/lib/mysql
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+
+  test:
+    build: .
+
+    environment:
+      APP_ENV: testing
+      APP_KEY: base64:tUiw917GIQ8c1NIXhc9D1/rDSoQhCh3FAQHcVF5P7CI=
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: loan_portfolio
+      DB_USERNAME: loan_user
+      DB_PASSWORD: loan_password
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    command: php artisan test
+
+
+  app:
+    build: .
+
+    ports:
+      - "8000:80"
+
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: base64:tUiw917GIQ8c1NIXhc9D1/rDSoQhCh3FAQHcVF5P7CI=
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: loan_portfolio
+      DB_USERNAME: loan_user
+      DB_PASSWORD: loan_password
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+      test:
+        condition: service_completed_successfully
+
+    command: >
+      sh -c "
+      php artisan migrate --force &&
+      php artisan db:seed --force &&
+      apache2-foreground
+      "
+
+
+volumes:
+  db_data:

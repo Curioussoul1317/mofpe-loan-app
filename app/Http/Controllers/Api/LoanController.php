@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLoanRequest;
+use App\Http\Requests\UpdateLoanRequest;
+use App\Http\Resources\LoanAuditResource;
 use App\Http\Resources\LoanResource;
 use App\Models\Loan;
 use App\Services\LoanService;
@@ -24,10 +26,16 @@ class LoanController extends Controller
                 'currency',
                 'creator',
             ])
+            ->withSum(
+                'repayments',
+                'amount'
+            )
             ->latest()
             ->paginate(15);
 
-        return LoanResource::collection($loans);
+        return LoanResource::collection(
+            $loans
+        );
     }
 
     public function store(
@@ -44,6 +52,11 @@ class LoanController extends Controller
             'creator',
         ]);
 
+        $loan->loadSum(
+            'repayments',
+            'amount'
+        );
+
         return new LoanResource($loan);
     }
 
@@ -56,6 +69,42 @@ class LoanController extends Controller
             'creator',
         ]);
 
+        $loan->loadSum(
+            'repayments',
+            'amount'
+        );
+
         return new LoanResource($loan);
     }
+
+        public function update(
+        UpdateLoanRequest $request,
+        Loan $loan
+    ): LoanResource {
+        $loan = $this->loanService->update(
+            $loan,
+            $request->validated(),
+            $request->user()
+        );
+
+        $loan->load([
+            'customer',
+            'currency',
+            'creator',
+        ]);
+
+        $loan->loadSum('repayments', 'amount');
+
+        return new LoanResource($loan);
+    }
+
+    public function audit(Loan $loan)
+        {
+            $audits = $loan->audits()
+                ->with('user')
+                ->oldest()
+                ->get();
+
+            return LoanAuditResource::collection($audits);
+        }
 }

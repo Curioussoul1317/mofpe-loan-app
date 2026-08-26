@@ -14,13 +14,7 @@ class StoreLoanRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            'loan_number' => [
-                'required',
-                'string',
-                'max:30',
-                'unique:loans,loan_number',
-            ],
+        return [ 
 
             'customer_id' => [
                 'required',

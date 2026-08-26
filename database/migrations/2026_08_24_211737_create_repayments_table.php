@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('amount', 28, 8);
             $table->date('payment_date');
             $table->string('reference_number', 100)
-                ->unique();
+                ->nullable()->unique();
             $table->foreignId('created_by')
                 ->constrained('users')
                 ->restrictOnDelete();

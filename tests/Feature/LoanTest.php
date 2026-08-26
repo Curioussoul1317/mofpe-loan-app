@@ -65,21 +65,37 @@ class LoanTest extends TestCase
         ]);
     }
 
-    public function test_loan_numbers_are_generated(): void
-    {
-        Sanctum::actingAs($this->officer);
+public function test_loan_numbers_are_generated(): void
+{
+    Sanctum::actingAs($this->officer);
 
-        $this->postJson('/api/loans', $this->loanData())
-            ->assertSuccessful();
+    $this->postJson('/api/loans', $this->loanData())
+        ->assertSuccessful();
 
-        $this->postJson('/api/loans', $this->loanData())
-            ->assertSuccessful();
+    $this->postJson('/api/loans', $this->loanData())
+        ->assertSuccessful();
 
-        $loans = Loan::orderBy('id')->get();
+    $loans = Loan::orderBy('id')->get();
 
-        $this->assertSame('LN-000001', $loans[0]->loan_number);
-        $this->assertSame('LN-000002', $loans[1]->loan_number);
+    foreach ($loans as $loan) {
+        $expected = 'LN-' . str_pad(
+            $loan->id,
+            6,
+            '0',
+            STR_PAD_LEFT
+        );
+
+        $this->assertSame(
+            $expected,
+            $loan->loan_number
+        );
     }
+
+    $this->assertNotSame(
+        $loans[0]->loan_number,
+        $loans[1]->loan_number
+    );
+}
 
     public function test_zero_principal_is_rejected(): void
     {

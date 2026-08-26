@@ -3,117 +3,81 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Login</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
     >
-
-    <title>Login | Loan Portfolio Management System</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f6f8;
-            margin: 0;
-        }
-
-        .container {
-            max-width: 420px;
-            margin: 100px auto;
-            background: white;
-            padding: 32px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        h1 {
-            margin-top: 0;
-            font-size: 24px;
-        }
-
-        .field {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            width: 100%;
-            padding: 11px;
-            border: 0;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .error {
-            color: #b91c1c;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-    </style>
 </head>
 
-<body>
+<body class="bg-light">
 
 <div class="container">
-    <h1>Loan Portfolio Management System</h1>
-    <p>Sign in to continue.</p>
-    <form method="POST" action="{{ route('login.store') }}">
-        @csrf
 
-        <div class="field">
-            <label for="email">
-                Email
-            </label>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                value="{{ old('email') }}"
-                required
-                autofocus
-            >
-            @error('email')
-                <div class="error">
-                    {{ $message }}
+    <div class="card mx-auto mt-5"
+         style="max-width: 420px;">
+
+        <div class="card-body">
+
+            <h3 class="mb-4">
+                Loan Portfolio
+            </h3>
+
+            <form method="POST"
+                  action="{{ route('login.store') }}">
+
+                @csrf
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        class="form-control"
+                        required
+                    >
+
                 </div>
-            @enderror
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+                @error('email')
+                    <div class="alert alert-danger">
+                        {{ $message }}
+                    </div>
+                @enderror
+
+                <button class="btn btn-primary w-100">
+                    Login
+                </button>
+
+            </form>
+
         </div>
 
-        <div class="field">
-            <label for="password">
-                Password
-            </label>
-            <input
-                id="password"
-                name="password"
-                type="password"
-                required
-            >
-            @error('password')
-                <div class="error">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <button type="submit">
-            Login
-        </button>
-
-    </form>
+    </div>
 
 </div>
 

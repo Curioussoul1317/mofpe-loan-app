@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
-            $table->string('loan_number', 30)->unique();
+            $table->string('loan_number', 30)->nullable()->unique();
             $table->foreignId('customer_id')
                 ->constrained()
                 ->restrictOnDelete();

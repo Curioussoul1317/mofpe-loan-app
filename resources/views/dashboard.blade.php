@@ -1,33 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"  >
+@extends('layouts.app')
 
-    <title>Dashboard</title>
-</head>
+@section('title', 'Dashboard')
 
-<body>
+@section('content')
 
-<h1>Loan Portfolio Dashboard</h1>
+<h1 class="mb-4">Portfolio Dashboard</h1>
 
-<p>
-    Logged in as:
-    <strong>{{ auth()->user()->name }}</strong>
-</p>
+<div class="row g-3">
 
-<p>
-    Role:
-    <strong>{{ auth()->user()->role }}</strong>
-</p>
+    @foreach($currencies as $currency)
 
-<form method="POST" action="{{ route('logout') }}">
-    @csrf
+        <div class="col-md-6">
 
-    <button type="submit">
-        Logout
-    </button>
-</form>
+            <div class="card">
+                <div class="card-body">
 
-</body>
-</html>
+                    <h4>{{ $currency->code }}</h4>
+
+                    <p>
+                        Active Loans:
+                        <strong>
+                            {{ $currency->loans->count() }}
+                        </strong>
+                    </p>
+
+                    <p>
+                        Total Principal:
+                        <strong>
+                            {{ $currency->code }}
+                            {{ $currency->total_principal }}
+                        </strong>
+                    </p>
+
+                    <p class="mb-0">
+                        Outstanding:
+                        <strong>
+                            {{ $currency->code }}
+                            {{ $currency->total_outstanding }}
+                        </strong>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+
+    @endforeach
+
+</div>
+
+@endsection
