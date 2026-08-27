@@ -55,7 +55,12 @@ class LoanTest extends TestCase
         $loan = Loan::first();
 
         $this->assertSame(
-            'LN-000001',
+            'LN-' . str_pad(
+                (string) $loan->id,
+                6,
+                '0',
+                STR_PAD_LEFT
+            ),
             $loan->loan_number
         );
 

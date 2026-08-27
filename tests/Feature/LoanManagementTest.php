@@ -77,8 +77,25 @@ class LoanManagementTest extends TestCase
 
         $loans = Loan::orderBy('id')->get();
 
-        $this->assertSame('LN-000001', $loans[0]->loan_number);
-        $this->assertSame('LN-000002', $loans[1]->loan_number);
+        $this->assertSame(
+            'LN-' . str_pad(
+                (string) $loans[0]->id,
+                6,
+                '0',
+                STR_PAD_LEFT
+            ),
+            $loans[0]->loan_number
+        );
+
+        $this->assertSame(
+            'LN-' . str_pad(
+                (string) $loans[1]->id,
+                6,
+                '0',
+                STR_PAD_LEFT
+            ),
+            $loans[1]->loan_number
+        );
     }
 
     public function test_zero_principal_is_rejected(): void
