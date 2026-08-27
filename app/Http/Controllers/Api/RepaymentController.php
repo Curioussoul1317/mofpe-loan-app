@@ -34,8 +34,7 @@ class RepaymentController extends Controller
         );
     }
 
-    public function store(
-        StoreRepaymentRequest $request,
+    public function store(   StoreRepaymentRequest $request,
         Loan $loan
     ): RepaymentResource {
         $repayment =
